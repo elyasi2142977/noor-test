@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "1.build": "node node_modules/esbuild/bin/esbuild src/index.ts --bundle --outfile=index.js --platform=node",
+    "2.start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.10",
+    "esbuild": "^0.21.4",
+    "express": "^4.19.2",
+    "fs-extra": "^11.2.0",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/fs-extra": "^11.0.4",
+    "@types/sqlite3": "^3.1.11"
+  }
+}
