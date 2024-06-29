@@ -2,20 +2,23 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "1.build": "node node_modules/esbuild/bin/esbuild src/index.ts --bundle --outfile=index.js --platform=node",
-    "2.start": "node index.js"
+    "1.build": "node node_modules/esbuild/bin/esbuild src/index.ts src/server/App.ts src/server/abstruction.ts --minify --outdir=dist --format=cjs --platform=node",
+    "2.start": "node dist/index.js",
+    "test": "nodemon dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/knex": "^0.16.1",
     "body-parser": "^1.20.2",
     "ejs": "^3.1.10",
     "esbuild": "^0.21.4",
     "express": "^4.19.2",
     "fs-extra": "^11.2.0",
+    "knex": "^3.1.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
