@@ -6,7 +6,7 @@ import knex, { QueryBuilder } from "knex"; // ORM module
 import { Types } from "./abstruction"; // reference to types
 
 /**
- * noor test project
+ * noor test project (Quran navigator)
  * for military order
  * @author Hamidreza Elyasi
  * @github https://github.com/elyasi2142977
