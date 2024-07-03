@@ -107,6 +107,24 @@ export namespace App {
         })
     })
     /**
+     * API for list of joz 
+     * @returns {Types.IJoz[]}
+     */
+    routers.get("/jozlist",(req:ex.Request,res:ex.Response)=>{
+        Data.getJoz().then((x)=>{
+            res.json(x)
+        })
+    })
+    /**
+     * API for list of sura 
+     * @returns {Types.ISura[]}
+     */
+    routers.get("/suralist",(req:ex.Request,res:ex.Response)=>{
+        Data.getSura().then((x)=>{
+            res.json(x)
+        })
+    })
+    /**
      * class for databese control
      * connection,queries,datatype...
      * @database SQLite3
@@ -163,7 +181,27 @@ export namespace App {
         private static async getMeaning(meaningful:Types.meaningful,query:knex.Knex.QueryBuilder) : Promise<Types.IAye[]> {
             var res : Types.IAye[] = await query.join(meaningful,(j:any)=>{
                 j.on(`${meaningful}.sura`,"=","quran_text.sura").andOn(`${meaningful}.aya`,"=","quran_text.aya")
+            }).join("quranNameList",(j)=>{
+                j.on("quran_text.sura","=","quranNameList.id")
             })
+            return res
+        }
+        /**
+         * method of joz list in database
+         * @returns {Promise<Types.IJoz[]>}
+         */
+        public static async getJoz() : Promise<Types.IJoz[]> {
+            var c : knex.Knex = this.connect()
+            var res : Types.IJoz[] = await c("quranJOZ")
+            return res
+        }
+        /**
+         * method of sura list in database
+         * @returns {Promise<Types.ISura[]>}
+         */
+        public static async getSura() : Promise<Types.ISura[]> {
+            var c : knex.Knex = this.connect()
+            var res : Types.ISura[] = await c("quranNameList")
             return res
         }
         /**
