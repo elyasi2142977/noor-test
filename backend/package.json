@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "1.build": "node node_modules/esbuild/bin/esbuild src/index.ts src/server/App.ts src/server/abstruction.ts --minify --outdir=dist --format=cjs --platform=node",
+    "1.build": "node node_modules/esbuild/bin/esbuild src/index.ts src/server/App.ts src/server/abstraction.ts --minify --outdir=dist --format=cjs --platform=node",
     "2.start": "node dist/index.js",
     "test": "nodemon dist/index.js"
   },

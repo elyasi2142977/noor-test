@@ -12,12 +12,15 @@ import { ref } from 'vue';
 import InputText from "primevue/inputtext"
 import Button from 'primevue/button'
 import { useRouter } from 'vue-router';
+import { inject } from 'vue';
+import { useAttrs } from 'vue';
 var keyword = ref({word:""})
 
+var attr = useAttrs()
 var r = useRouter()
 
 function search() {
-    r.push("/explore/search?s="+keyword.value.word)
+    r.push("/explore/search?s="+keyword.value.word+"&m="+attr.mean)
 }
 
 </script>

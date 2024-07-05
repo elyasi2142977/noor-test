@@ -3,7 +3,7 @@ import bp from "body-parser";
 import cors from "cors" // fix cors error
 import sqlite from "sqlite3"; // SQLite3 driver
 import knex, { QueryBuilder } from "knex"; // ORM module
-import { Types } from "./abstruction"; // reference to types
+import { Types } from "./abstraction"; // reference to types
 
 /**
  * noor test project (Quran navigator)
@@ -57,7 +57,13 @@ export namespace App {
      * @returns {Types.IAye[]}
      */
     routers.get("/page/:num",(req:ex.Request,res:ex.Response)=>{
-        Data.getText({pageNo:req.params.num},Data.meaningful(req.query.m?.toString())).then((x)=>{
+        Data.getText({pageNo:req.params.num},req.query.m?.toString()).then((x)=>{
+            if (x.length === 0) {
+                console.log(x)
+                res.status(404).json([{text:"صفحه مورد نظر وجود ندارد!..."}])
+                return 0
+            }
+            console.log(x)
             res.json(x)
         })
     })
@@ -72,7 +78,13 @@ export namespace App {
             res.status(404).send("keyword not found!")
             return 0
         }
-        Data.search(req.query.s?.toString(),Data.meaningful(req.query.m?.toString())).then((x)=>{
+        Data.search(req.query.s?.toString(),req.query.m?.toString()).then((x)=>{
+            if (x.length === 0) {
+                console.log(x)
+                res.status(404).json([{text:"موردی در متن قرآن یافت نشد!..."}])
+                return 0
+            }
+            console.log(x)
             res.json(x)
         })
     })
@@ -85,12 +97,16 @@ export namespace App {
      * @returns {Types.IAye[]}
      */
     routers.get("/sura",(req:ex.Request,res:ex.Response)=>{
-        var sura = req.query.s?.toString()||"1"
-        var aya = req.query.a?.toString()||"1"
-        var query = (req.query.a) 
+        var query = (req.query.a != "0") 
         ? {'quran_text.sura':req.query.s?.toString()||"1",'quran_text.aya':req.query.a?.toString()} 
         : {'quran_text.sura':req.query.s?.toString()||"1"}
-        Data.getText(query,Data.meaningful(req.query.m?.toString())).then((x)=>{
+        Data.getText(query,req.query.m?.toString()).then((x)=>{
+            if (x.length === 0) {
+                console.log(x)
+                res.status(404).json([{text:"آیات مورد نظر یافت نشد!..."}])
+                return 0
+            }
+            console.log(x)
             res.json(x)
         })
     })
@@ -102,7 +118,13 @@ export namespace App {
      * @returns {Types.IAye[]}
      */
     routers.get("/joz/:j",(req:ex.Request,res:ex.Response)=>{
-        Data.getText({joz:req.params.j?.toString()},Data.meaningful(req.query.m?.toString())).then((x)=>{
+        Data.getText({joz:req.params.j?.toString()},req.query.m?.toString()).then((x)=>{
+            if (x.length === 0) {
+                console.log(x)
+                res.status(404).json([{err:"array empty"}])
+                return 0
+            }
+            console.log(x)
             res.json(x)
         })
     })
@@ -121,6 +143,15 @@ export namespace App {
      */
     routers.get("/suralist",(req:ex.Request,res:ex.Response)=>{
         Data.getSura().then((x)=>{
+            res.json(x)
+        })
+    })
+    /**
+     * API for list of translates 
+     * @returns {Types.ITrans[]}
+     */
+    routers.get("/translist",(req:ex.Request,res:ex.Response)=>{
+        Data.getMeaningfuls().then((x)=>{
             res.json(x)
         })
     })
@@ -153,7 +184,7 @@ export namespace App {
          * @param meaningful who is meaningful?
          * @returns {Promise<Types.IAye[]>}
          */
-        public static async search(keyword: any,meaningful:Types.meaningful): Promise<Types.IAye[]> {
+        public static async search(keyword: any,meaningful:string = "fa_ansarian"): Promise<Types.IAye[]> {
             var c : knex.Knex = this.connect();
             var arabic = keyword.replaceAll("ک", "ك").replaceAll("ی", "ي")
             var query : knex.Knex.QueryBuilder = c("quran_text").where("text_clean","like",`%${arabic}%`)
@@ -166,7 +197,7 @@ export namespace App {
          * @param meaningful who is meaningful?
          * @returns {Promise<Types.IAye[]>}
          */
-        public static async getText(query:Types.IAye,meaningful:Types.meaningful): Promise<Types.IAye[]> {
+        public static async getText(query:Types.IAye,meaningful:string = "fa_ansarian"): Promise<Types.IAye[]> {
             var c : knex.Knex = this.connect()
             var text : knex.Knex.QueryBuilder = c("quran_text").where(query)
             var res: Types.IAye[] = await this.getMeaning(meaningful,text)
@@ -178,7 +209,7 @@ export namespace App {
          * @param query the query is created in other methods by Knex.QueryBuilder
          * @returns {Promise<Types.IAye[]>}
          */
-        private static async getMeaning(meaningful:Types.meaningful,query:knex.Knex.QueryBuilder) : Promise<Types.IAye[]> {
+        private static async getMeaning(meaningful:string,query:knex.Knex.QueryBuilder) : Promise<Types.IAye[]> {
             var res : Types.IAye[] = await query.join(meaningful,(j:any)=>{
                 j.on(`${meaningful}.sura`,"=","quran_text.sura").andOn(`${meaningful}.aya`,"=","quran_text.aya")
             }).join("quranNameList",(j)=>{
@@ -202,6 +233,15 @@ export namespace App {
         public static async getSura() : Promise<Types.ISura[]> {
             var c : knex.Knex = this.connect()
             var res : Types.ISura[] = await c("quranNameList")
+            return res
+        }
+        /**
+         * method of meaningful list in database
+         * @returns {Promise<Types.ITrans[]>}
+         */
+        public static async getMeaningfuls() : Promise<Types.ITrans[]> {
+            var c : knex.Knex = this.connect()
+            var res : Types.ITrans[] = await c("tbl_trans")
             return res
         }
         /**

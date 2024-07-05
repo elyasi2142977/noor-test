@@ -30,6 +30,15 @@ export namespace Types {
         sura:string
         page:string
     }
+    /**
+     * Table: tbl_trans
+     */
+    export interface ITrans {
+        id:string
+        name:string
+        table:string
+        selection:string
+    }
     export enum meaningful  {
         shakir = "en_shakir",
         ansarian = "fa_ansarian",

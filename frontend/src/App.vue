@@ -3,7 +3,6 @@ import { RouterLink, RouterView } from 'vue-router'
 import InputText from "primevue/inputtext"
 import Button from 'primevue/button'
 import Queryform from './components/Queryform.vue'
-var t = "10"
 </script>
 
 <template>

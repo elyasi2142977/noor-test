@@ -1,7 +1,7 @@
 <template>
     <div class="quran-joz">
         <Select v-model="joz" :options="jozlist.list" optionLabel="joz" placeholder="جزء مورد نظر" class="w-full joz-list md:w-56" />
-        <Button>نمایش</Button>
+        <Button @click="getjoz()">نمایش</Button>
     </div>
 </template>
 
@@ -9,9 +9,12 @@
 import Select from 'primevue/select'
 import Button from 'primevue/button'
 import { onMounted, ref } from 'vue'
-import {Types} from '../abstruction'
+import {Types} from '../abstraction'
 import { onBeforeMount } from 'vue'
+import { useAttrs } from 'vue'
+import { useRouter } from 'vue-router'
 
+var attr = useAttrs()
 var joz = ref()
 var jozlist = ref({list:['x']})
 
@@ -22,6 +25,11 @@ onBeforeMount(()=>{
     })
 })
 
+var r = useRouter()
+
+function getjoz() {
+    r.push("/explore/joz?j="+joz.value.id+"&m="+attr.mean)
+}
 </script>
 
 <style scoped>
@@ -36,4 +44,4 @@ onBeforeMount(()=>{
 .joz-list {
     color: #000;
 }
-</style>
+</style>../abstraction
